@@ -35,7 +35,7 @@ namespace MilitaryLibrary
             Type = type;
         }
 
-        public virtual string[] GetInfo()//получение инф-ции
+        public virtual string[] GetInfo()//получение инф-ции (уже virtual)
         {
             var info = new string[2];//массив на 2 ячейки
             info[0] = $"{Name} {Surname}";

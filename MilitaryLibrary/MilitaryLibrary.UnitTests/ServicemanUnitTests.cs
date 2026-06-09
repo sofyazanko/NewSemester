@@ -134,7 +134,7 @@ namespace MilitaryLibrary.UnitTests
         }
     }
 
-    
+
     [TestFixture]
     public class VeteranTests
     {
@@ -181,4 +181,98 @@ namespace MilitaryLibrary.UnitTests
             );
         }
     }
+        [TestFixture]
+        public class SubdivisionTests//тесты для 15
+        {
+            MilitarySubdivision unit;
+            Serviceman[] servicemen;
+
+            [SetUp]
+            public void Setup()//тестовые солдаты
+            {
+               
+                var ivanov = new Serviceman("Иван", "Иванов", "АБ123", "рядовой", "54321", new DateTime(2020, 1, 1), TypeService.Urgent);
+                var chernov = new Serviceman("Пётр", "Чернов", "ВГ456", "сержант", "54321", new DateTime(2019, 5, 1), TypeService.UnderContract);
+                var bystrov = new Serviceman("Сидор", "Быстров", "ДЕ789", "лейтенант", "10001", new DateTime(2021, 3, 1), TypeService.Urgent);
+                var belov = new Serviceman("Алексей", "Белов", "ЖК012", "рядовой", "54321", new DateTime(2022, 7, 1), TypeService.Urgent);
+                var smirnov = new Serviceman("Николай", "Смирнов", "ЗЛ345", "капитан", "54321", new DateTime(2018, 9, 1), TypeService.UnderContract);
+
+                servicemen = new Serviceman[] { ivanov, chernov, bystrov, belov, smirnov, ivanov };//проверка на двух ивановых
+
+               
+                unit = new MilitarySubdivision("Мотострелковый полк", "54321", servicemen);//созд подразд
+            }
+
+        [Test]
+        public void ConstructorTest()
+        {
+            Assert.That(unit.Name, Is.EqualTo("Мотострелковый полк"));
+            Assert.That(unit.UnitNumber, Is.EqualTo("54321"));
+
+            var list = unit.ToList();  
+
+            foreach (var serviceman in servicemen)
+            {
+                if (serviceman.MilUnitNumber != unit.UnitNumber)
+                    continue;  //пропустить солдат не из нашей части
+
+                Assert.That(list.Contains(serviceman) &&
+                            list.IndexOf(serviceman) == list.LastIndexOf(serviceman), Is.True);
+            }
+        }
+
+        [Test]
+            public void CountTest()
+            {
+                Assert.That(unit.Count, Is.EqualTo(4));//должно быть 4 солдата
+            }
+
+            [Test]
+            public void IEnumerableTest()
+            {
+                int i = 0;
+                
+                Serviceman[] expected = new Serviceman[]
+                {
+                servicemen[0], //сначала иванов
+                servicemen[1], //потом чернов
+                servicemen[3], 
+                servicemen[4]  
+                };
+
+                foreach (var serviceman in unit)
+                {
+                    Assert.That(serviceman, Is.SameAs(expected[i]));//перебираю по порядку солдат
+                    i++;
+                }
+                Assert.That(i, Is.EqualTo(4));
+            }
+        }
+
+        [TestFixture]
+        public class ServicemanCompareTests
+        {
+            [Test]
+            public void CompareToTest()
+            {
+                
+                var ivanov = new Serviceman("Иван", "Иванов", "АБ123", "рядовой", "54321", new DateTime(2020, 1, 1), TypeService.Urgent);
+                var chernov = new Serviceman("Пётр", "Чернов", "ВГ456", "сержант", "54321", new DateTime(2019, 5, 1), TypeService.UnderContract);
+                var bystrov = new Serviceman("Сидор", "Быстров", "ДЕ789", "лейтенант", "10001", new DateTime(2021, 3, 1), TypeService.Urgent);
+                var belov = new Serviceman("Алексей", "Белов", "ЖК012", "рядовой", "54321", new DateTime(2022, 7, 1), TypeService.Urgent);
+                var smirnov = new Serviceman("Николай", "Смирнов", "ЗЛ345", "капитан", "54321", new DateTime(2018, 9, 1), TypeService.UnderContract);
+
+               
+                Assert.That(bystrov.CompareTo(ivanov), Is.LessThan(0));
+
+                Assert.That(ivanov.CompareTo(chernov), Is.LessThan(0));
+
+                Assert.That(ivanov.CompareTo(belov), Is.GreaterThan(0));
+
+                Assert.That(ivanov.CompareTo(smirnov), Is.LessThan(0));
+
+                Assert.That(ivanov.CompareTo(ivanov), Is.EqualTo(0));
+            }
+        }
+
 }

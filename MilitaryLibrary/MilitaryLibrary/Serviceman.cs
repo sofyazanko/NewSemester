@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MilitaryLibrary
 {
-    public class Serviceman
+    public class Serviceman : IComparable<Serviceman>//добавили возможность сортировки
     {
 
         public string Name { get; set; }//имя
@@ -55,5 +55,21 @@ namespace MilitaryLibrary
 
             return info;
         }
+        public int CompareTo(Serviceman other)//сравниваем солдата this с солдатом other
+        {
+            if (other == null)//если другого солдата нет 
+                return 1;
+
+            int result = string.Compare(this.MilUnitNumber, other.MilUnitNumber);//сравн по номеру части
+            if (result != 0)//если номера частей одинак продолж сравн
+                return result;
+
+            result = string.Compare(this.Surname, other.Surname);//сравнение по фамилии
+            if (result != 0)
+                return result;
+
+            return string.Compare(this.Name, other.Name);//сравн по имени
+        }
+
     }
 }
